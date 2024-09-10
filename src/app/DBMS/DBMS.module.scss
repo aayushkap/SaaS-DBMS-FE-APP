@@ -1,0 +1,100 @@
+@import "../styles/_mixins.scss";
+@import "../styles/_variables.scss";
+
+.container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "header header header"
+    "left-sidebar content-area right-sidebar";
+  height: 100%;
+  gap: $cell-gap;
+}
+
+.blur {
+  filter: blur(5px);
+  pointer-events: none; /* Prevent interaction with blurred content */
+}
+
+.headerCell {
+  @include cellConfig();
+
+  grid-area: header;
+  min-height: 100px;
+}
+
+.leftCell {
+  @include cellConfig();
+  grid-area: left-sidebar;
+
+  width: 10vw;
+  min-width: 100px;
+}
+
+.rightCell {
+  @include cellConfig();
+  grid-area: right-sidebar;
+
+  width: 10vw;
+  min-width: 100px;
+}
+
+.contentCell {
+  grid-area: content-area;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+
+  width: 100%;
+  min-width: 100px;
+}
+
+.topContentCell,
+.bottomContentCell {
+  @include cellConfig();
+
+  position: relative;
+  overflow: auto;
+
+  min-height: 100px;
+  transition: height 0.3s ease; /* Add transition for smooth height change */
+}
+
+.topContentCell {
+  flex-grow: 1;
+}
+
+.bottomContentCell {
+  flex-grow: 1;
+}
+
+.content {
+  text-align: center;
+  height: 200px;
+}
+
+.drag-divider {
+  background: linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 179, 0) 80%);
+  border-radius: 100px;
+  height: 3px;
+  cursor: ns-resize;
+  margin: -2px 0 -2px 0;
+}
+
+.dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: $cell-border-size solid $cell-border-color;
+  border-radius: $cell-border-radius;
+  padding: 10px;
+}
+
+.no-transition .topContentCell,
+.no-transition .bottomContentCell {
+  transition: none !important;
+}

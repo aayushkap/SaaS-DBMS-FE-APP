@@ -1,0 +1,56 @@
+@import "./variables"; // Import variables
+@import "./mixins"; // Import mixins
+
+@font-face {
+  font-family: "BerlinSans";
+  src: url("/fonts/berlinsans.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+// Global Styles
+:root {
+  --font-primary: #{$font-primary}, sans-serif;
+  --font-secondary: #{$font-secondary}, sans-serif;
+  --font-tertiary: #{$font-tertiary}, sans-serif;
+
+  --cell-gap: #{$cell-gap};
+  --cell-border-size: #{$cell-border-size};
+  --cell-border-radius: #{$cell-border-radius};
+  --cell-border-color: #{$cell-border-color};
+  --cell-background-color: #{$cell-background-color};
+  --cell-padding: #{$cell-padding};
+}
+
+::selection {
+  color: $primary-color;
+  background-color: $secondary-color;
+}
+
+body,
+html,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+// /* Styles for light mode */
+// @media (prefers-color-scheme: light) {
+//   html {
+//     background-color: $secondary-color;
+//     color: $primary-color;
+//   }
+// }
+
+// /* Styles for dark mode */
+// @media (prefers-color-scheme: dark) {
+//   html {
+//     background-color: $primary-color;
+//     color: $secondary-color;
+//   }
+// }

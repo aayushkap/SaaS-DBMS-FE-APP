@@ -1,0 +1,31 @@
+/* ToolTip.module.css */
+@import "../../styles/_variables.scss";
+
+.container {
+  position: relative;
+  display: inline;
+  width: fit-content;
+  height: fit-content;
+}
+
+.tooltip {
+  white-space: nowrap;
+
+  position: absolute;
+  bottom: -100%;
+  left: -20%;
+
+  z-index: 100;
+  pointer-events: none; /* Prevent tooltip from blocking hover events */
+  user-select: none;
+
+  padding: 2px;
+
+  border-radius: 2px;
+  border: 2px solid #543f19;
+
+  background-color: #f5b642;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: bold;
+}

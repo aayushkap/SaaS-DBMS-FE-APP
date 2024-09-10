@@ -1,0 +1,25 @@
+/* styles/_mixins.scss */
+
+@import "./variables"; // Import variables to use within mixins
+
+@mixin BerlinSans() {
+  font-family: $font-primary;
+}
+
+@mixin Montserrat() {
+  font-family: $font-secondary;
+  font-weight: 600;
+}
+
+@mixin poppinsRegular() {
+  font-family: $font-tertiary;
+  font-weight: 400;
+}
+
+@mixin cellConfig() {
+  border: $cell-border-size solid $cell-border-color;
+  border-radius: $cell-border-radius;
+  background-color: $cell-background-color;
+
+  padding: $cell-padding;
+}

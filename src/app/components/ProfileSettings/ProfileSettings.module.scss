@@ -1,0 +1,177 @@
+@import "../../styles/_mixins.scss";
+
+.userSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formContainer {
+  @include poppinsRegular();
+
+  min-width: 300px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1rem;
+  padding: 1rem;
+
+  user-select: none;
+
+  transition: all 0.2s;
+}
+
+.formTitle {
+  @include Montserrat();
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 3px;
+    border-radius: 100px;
+    background: $secondary-color;
+  }
+}
+
+.textField {
+  @include poppinsRegular();
+
+  width: 100%;
+  text-align: left;
+
+  user-select: text;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+
+  label {
+    @include Montserrat();
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  input {
+    @include poppinsRegular();
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    position: relative;
+  }
+}
+
+.passwordField {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: right;
+  gap: 1 rem;
+
+  .eyeIcon {
+    position: absolute;
+    cursor: pointer;
+    right: 5px;
+    background-color: $white;
+  }
+}
+
+.formButton {
+  @include poppinsRegular();
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background: $secondary-color;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: darken($secondary-color, 10%);
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  &:active {
+    scale: 0.95;
+  }
+}
+
+.error {
+  @include poppinsRegular();
+  font-size: 0.75rem;
+  color: red;
+}
+
+.switchButton {
+  @include poppinsRegular();
+
+  font-size: 1rem;
+  padding: none;
+  margin: none;
+}
+
+.switch {
+  @include poppinsRegular();
+
+  cursor: pointer;
+  text-decoration: underline;
+
+  font-size: 1rem;
+
+  color: $secondary-color;
+  background-color: transparent;
+  border: none;
+}
+
+.oAuthButton {
+  @include poppinsRegular();
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  cursor: pointer;
+
+  padding: 0.5rem 1rem;
+
+  border: 1px solid $secondary-color;
+  border-radius: 100px;
+
+  color: $black;
+  background-color: transparent;
+  font-size: 1rem;
+
+  transition: transform 0.2s, background-color 0.2s;
+
+  &:hover {
+    background-color: $secondary-color;
+    color: $white;
+  }
+  &:active {
+    scale: 0.95;
+  }
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: #cccccc50;
+  padding: 1px;
+  border-radius: 100px;
+  margin: 10px 0;
+}

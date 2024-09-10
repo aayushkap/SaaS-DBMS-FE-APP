@@ -1,0 +1,22 @@
+/* _ in the file name is a convention to indicate that this file is not meant to be compiled on its own. */
+
+$min-support-width: 700px;
+
+// Fonts
+$font-primary: "BerlinSans";
+$font-secondary: "Montserrat";
+$font-tertiary: "Poppins";
+
+// Cell styles
+$cell-gap: 10px;
+$cell-border-radius: 10px;
+$cell-border-size: 1px;
+$cell-border-color: #323232;
+$cell-background-color: #fbfcf8;
+$cell-padding: 15px;
+
+// Colors
+$primary-color: #ff5e5e;
+$secondary-color: #b0183d;
+$white: #fbfcf8;
+$black: #323232;
