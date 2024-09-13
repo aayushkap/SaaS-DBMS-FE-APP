@@ -1,7 +1,7 @@
 /* components/Dropdown.module.scss */
 
-@import url("../../styles/_mixins");
-@import url("../../styles/_variables");
+@import "../../styles/_mixins";
+@import "../../styles/_variables";
 
 .dropdown {
   @include poppinsRegular();
