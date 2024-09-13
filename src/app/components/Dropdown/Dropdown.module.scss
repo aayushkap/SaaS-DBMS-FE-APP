@@ -1,0 +1,43 @@
+/* components/Dropdown.module.scss */
+
+@import url("../../styles/_mixins");
+@import url("../../styles/_variables");
+
+.dropdown {
+  @include poppinsRegular();
+
+  margin: 0;
+  padding: 0 0 5px;
+  border: none;
+  color: $black;
+  font-size: 2rem;
+
+  &:hover {
+    border: none;
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    border: none;
+  }
+}
+
+.option {
+  @include poppinsRegular();
+
+  margin: 0;
+  padding: 0;
+  color: $black;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    color: $white;
+    background-color: $secondary-color;
+    cursor: pointer;
+  }
+}

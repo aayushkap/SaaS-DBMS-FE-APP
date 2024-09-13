@@ -1,0 +1,56 @@
+@import url("../../styles/_mixins");
+@import url("../../styles/_variables");
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.tableInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  text-align: left;
+}
+
+.tableName {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+
+  h3 {
+    @include poppinsRegular();
+
+    margin: 0;
+    padding: 0;
+    color: $black;
+    font-size: 2rem;
+  }
+
+  .icon {
+    cursor: pointer;
+    transform: rotate(0deg);
+    transition: transform 0.3s;
+
+    &:hover {
+      color: $secondary-color;
+      transform: rotate(-180deg);
+    }
+  }
+}
+
+.table {
+  width: 100%;
+}

@@ -1,0 +1,38 @@
+@import url("../../styles/_mixins");
+@import url("../../styles/_variables");
+
+.connectionButtons {
+  @include poppinsRegular();
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 5px;
+}
+
+.connectionButton {
+  @include poppinsRegular();
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 20px;
+  border-radius: 5px;
+  color: $black;
+  font-size: 0.5rem;
+  user-select: none;
+  cursor: pointer;
+  flex-grow: 1; // Make the button take maximum width
+
+  &:hover {
+    color: $white;
+    background-color: $secondary-color;
+  }
+
+  &:active {
+    scale: 0.9;
+  }
+}

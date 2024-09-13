@@ -1,0 +1,56 @@
+{
+  "extends": "stylelint-config-standard",
+  "plugins": ["stylelint-order"],
+  "rules": {
+    "order/properties-order": [
+      [
+        {
+          "groupName": "Positioning",
+          "properties": [
+            "position",
+            "top",
+            "right",
+            "bottom",
+            "left",
+            "z-index"
+          ]
+        },
+        {
+          "groupName": "Box Model",
+          "properties": [
+            "display",
+            "flex",
+            "flex-direction",
+            "flex-wrap",
+            "flex-flow",
+            "justify-content",
+            "align-items",
+            "align-content",
+            "gap",
+            "width",
+            "height",
+            "margin",
+            "padding",
+            "border",
+            "border-radius"
+          ]
+        },
+        {
+          "groupName": "Colors & Typography",
+          "properties": [
+            "color",
+            "background-color",
+            "font-size",
+            "font-family",
+            "text-align"
+          ]
+        }
+      ],
+      {
+        "unspecified": "bottom",
+        "emptyLineBefore": "always"
+      }
+    ],
+    "order/properties-alphabetical-order": null
+  }
+}

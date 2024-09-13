@@ -1,0 +1,123 @@
+@import url("../../styles/_mixins");
+@import url("../../styles/_variables");
+$table-border-color: #ddd;
+$table-header-bg-color: #f2f2f2;
+
+.tableContainer {
+  table {
+    @include poppinsRegular();
+
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 8px;
+      border: 1px solid $table-border-color; //! Should be adjustable
+    }
+
+    th {
+      padding: 10px;
+      background-color: $table-header-bg-color;
+      text-align: center;
+      user-select: none;
+    }
+
+    td {
+      text-align: center; // Should be adjustable
+    }
+
+    svg {
+      color: darken($table-border-color, 30%);
+      max-width: 20px;
+      max-height: 20px;
+    }
+  }
+
+  .columnInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sortIcon {
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+
+    &.active {
+      color: $secondary-color;
+    }
+  }
+
+  .pagination {
+    @include poppinsRegular();
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+
+    & .centralControls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    & .pageButton {
+      @include poppinsRegular();
+
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      letter-spacing: 1.5px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      background-color: $secondary-color;
+      text-align: center;
+      cursor: pointer;
+
+      &:hover {
+        background-color: lighten($secondary-color, 10%);
+      }
+
+      &.disabled {
+        background-color: grey;
+        cursor: not-allowed;
+
+        &:hover {
+          background-color: grey;
+        }
+      }
+    }
+  }
+
+  .filterControls {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+
+    .resetButton {
+      padding: 5px 10px;
+      border: none;
+      color: white;
+      background-color: grey;
+      cursor: pointer;
+
+      &.highlighted {
+        background-color: $secondary-color;
+      }
+
+      &:hover {
+        background-color: lighten(grey, 10%);
+      }
+    }
+  }
+}
