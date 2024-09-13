@@ -10,7 +10,7 @@ const settingsSlice = createSlice({
   initialState,
   reducers: {
     setSettings(state, action) {
-      console.log("setSettings Action called with:", action.payload); // Confirm action payload
+      // console.log("setSettings Action called with:", action.payload); // Confirm action payload
       state.activeToolTip = action.payload;
     },
   },

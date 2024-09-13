@@ -1,6 +1,7 @@
 /* _ in the file name is a convention to indicate that this file is not meant to be compiled on its own. */
 
 $min-support-width: 700px;
+$media-width: 1000px;
 
 // Fonts
 $font-primary: "BerlinSans";
@@ -13,7 +14,10 @@ $cell-border-radius: 10px;
 $cell-border-size: 1px;
 $cell-border-color: #323232;
 $cell-background-color: #fbfcf8;
-$cell-padding: 15px;
+$cell-padding: 10px;
+$min-cell-width: 200px;
+$cell-title-size: 1.75rem;
+$cell-title-size-small: 1.3rem;
 
 // Colors
 $primary-color: #ff5e5e;

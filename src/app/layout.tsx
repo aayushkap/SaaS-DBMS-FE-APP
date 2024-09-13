@@ -13,6 +13,7 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <title>AERO DBMS</title>
+        <link rel="icon" href="./favicon.ico" />
       </head>
       <body>
         <QueryClientProviderWrapper>

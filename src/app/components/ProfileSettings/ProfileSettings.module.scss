@@ -1,4 +1,5 @@
-@import "../../styles/_mixins.scss";
+@import url("../../styles/_mixins");
+@import url("../../styles/_variables");
 
 .userSection {
   display: flex;
@@ -9,32 +10,29 @@
 .formContainer {
   @include poppinsRegular();
 
-  min-width: 300px;
-
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-
-  gap: 1rem;
+  align-items: center;
   padding: 1rem;
-
+  min-width: 300px;
+  gap: 1rem;
   user-select: none;
-
   transition: all 0.2s;
 }
 
 .formTitle {
   @include Montserrat();
+
   font-size: 1.5rem;
   margin-bottom: 1rem;
 
   &::after {
-    content: "";
     display: block;
     width: 100%;
     height: 3px;
     border-radius: 100px;
+    content: "";
     background: $secondary-color;
   }
 }
@@ -44,7 +42,6 @@
 
   width: 100%;
   text-align: left;
-
   user-select: text;
 }
 
@@ -55,17 +52,19 @@
 
   label {
     @include Montserrat();
+
     font-size: 1rem;
     margin-bottom: 0.25rem;
   }
 
   input {
     @include poppinsRegular();
-    font-size: 1rem;
+
+    position: relative;
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 5px;
-    position: relative;
+    font-size: 1rem;
   }
 }
 
@@ -73,26 +72,27 @@
   position: relative;
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: right;
+  align-items: center;
   gap: 1 rem;
 
   .eyeIcon {
     position: absolute;
-    cursor: pointer;
     right: 5px;
     background-color: $white;
+    cursor: pointer;
   }
 }
 
 .formButton {
   @include poppinsRegular();
-  font-size: 1rem;
+
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 5px;
-  background: $secondary-color;
   color: white;
+  font-size: 1rem;
+  background: $secondary-color;
   cursor: pointer;
   transition: background 0.2s;
 
@@ -112,56 +112,51 @@
 
 .error {
   @include poppinsRegular();
-  font-size: 0.75rem;
+
   color: red;
+  font-size: 0.75rem;
 }
 
 .switchButton {
   @include poppinsRegular();
 
-  font-size: 1rem;
-  padding: none;
   margin: none;
+  padding: none;
+  font-size: 1rem;
 }
 
 .switch {
   @include poppinsRegular();
 
-  cursor: pointer;
-  text-decoration: underline;
-
-  font-size: 1rem;
-
+  border: none;
   color: $secondary-color;
   background-color: transparent;
-  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .oAuthButton {
   @include poppinsRegular();
 
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 10px;
-
-  cursor: pointer;
-
+  align-items: center;
   padding: 0.5rem 1rem;
-
   border: 1px solid $secondary-color;
   border-radius: 100px;
-
   color: $black;
   background-color: transparent;
   font-size: 1rem;
-
+  gap: 10px;
+  cursor: pointer;
   transition: transform 0.2s, background-color 0.2s;
 
   &:hover {
-    background-color: $secondary-color;
     color: $white;
+    background-color: $secondary-color;
   }
+
   &:active {
     scale: 0.95;
   }
@@ -170,8 +165,8 @@
 .separator {
   width: 100%;
   height: 1px;
-  background-color: #cccccc50;
+  margin: 10px 0;
   padding: 1px;
   border-radius: 100px;
-  margin: 10px 0;
+  background-color: #cccccc50;
 }

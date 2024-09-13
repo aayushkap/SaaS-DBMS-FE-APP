@@ -31,7 +31,7 @@ function HeaderCell() {
   };
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div className={styles.headerTitle}>
         Welcome to <p className={styles.headerTitleInline}>AERO</p>, {username}.
       </div>
@@ -74,7 +74,7 @@ function HeaderCell() {
           )}
         </ToolTip>
       </div>
-    </div>
+    </section>
   );
 }
 

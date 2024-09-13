@@ -1,6 +1,6 @@
 /* styles/_mixins.scss */
 
-@import "./variables"; // Import variables to use within mixins
+@import "./_variables"; // Import variables to use within mixins
 
 @mixin BerlinSans() {
   font-family: $font-primary;

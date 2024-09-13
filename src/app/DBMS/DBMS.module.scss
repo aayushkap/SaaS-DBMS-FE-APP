@@ -29,7 +29,7 @@
   grid-area: left-sidebar;
 
   width: 10vw;
-  min-width: 100px;
+  min-width: $min-cell-width;
 }
 
 .rightCell {
@@ -37,7 +37,7 @@
   grid-area: right-sidebar;
 
   width: 10vw;
-  min-width: 100px;
+  min-width: $min-cell-width;
 }
 
 .contentCell {

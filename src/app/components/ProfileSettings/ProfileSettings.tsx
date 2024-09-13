@@ -145,7 +145,7 @@ const SignInForm = ({
   };
 
   function signInWithGitHub() {
-    console.log("1. signInWithGitHub");
+    // console.log("1. signInWithGitHub");
 
     const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
     const redirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;
@@ -320,7 +320,7 @@ const SignUpForm = ({
   };
 
   function signUpWithGitHub() {
-    console.log("1. signInWithGitHub");
+    // console.log("1. signInWithGitHub");
 
     const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
     const redirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;

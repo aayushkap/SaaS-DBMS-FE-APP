@@ -4,7 +4,8 @@ import React from "react";
 import { useState, useRef } from "react";
 import styles from "./DBMS.module.scss";
 import HeaderCell from "@/app/components/HeaderCell/HeaderCell";
-import ToolTip from "@/app/components/ToolTip/ToolTip";
+import ConnectionsCell from "@/app/components/ConnectionsCell/ConnectionsCell";
+import TableCell from "@/app/components/TableCell/TableCell";
 import Dialog from "@/app/components/Dialog/Dialog";
 
 function DBMS() {
@@ -54,7 +55,7 @@ function DBMS() {
           <HeaderCell />
         </div>
         <div className={styles.leftCell}>
-          <ToolTip message="This is a tooltip message"> Left Cell </ToolTip>
+          <ConnectionsCell />
         </div>
         <div className={styles.rightCell}>Right Cell</div>
         <div className={styles.contentCell} ref={contentAreaRef}>
@@ -65,7 +66,7 @@ function DBMS() {
               flexGrow: "0",
             }}
           >
-            Top Content Cell
+            <TableCell />
           </div>
 
           {showSQL && (
