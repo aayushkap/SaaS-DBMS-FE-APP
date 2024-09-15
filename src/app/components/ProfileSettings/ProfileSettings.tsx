@@ -240,7 +240,7 @@ const SignInForm = ({
       <div className={styles.separator}></div>
 
       <div className={styles.switchButton} onClick={() => setShowSignIn(false)}>
-        Don\'t have an account?
+        Do not have an account?
         <button className={styles.switch}>Sign Up.</button>
       </div>
     </form>
