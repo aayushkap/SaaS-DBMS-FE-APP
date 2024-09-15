@@ -1,110 +1,108 @@
-import React, { useState, useEffect } from "react";
-import {
-  FaSort,
-  FaHashtag,
-  FaFont,
-  FaSortUp,
-  FaSortDown,
-} from "react-icons/fa"; // Import the missing icons
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { FaSort, FaHashtag, FaSortUp, FaSortDown } from "react-icons/fa";
+import { BsColumns } from "react-icons/bs";
 import { TbAbc } from "react-icons/tb";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import styles from "./TableComp.module.scss";
 import Tooltip from "../ToolTip/ToolTip";
-import { IoIosArrowForward } from "react-icons/io";
-import { IoIosArrowBack } from "react-icons/io";
+import truncate from "@/app/helper/helpers";
 
-// Define types for the component props
 type Column = {
   Field: string;
   Type: string;
 };
 
 type Data = {
-  [key: string]: string | number; // Define the shape of data to be string or number
+  [key: string]: string | number;
 };
 
 type DynamicTableProps = {
   data: Data[];
   columns: Column[];
+  cellSize?: "small" | "medium" | "large";
+  showCellBorders?: boolean;
+  textAlignment?: "left" | "center" | "right";
   maxDisplay?: number;
 };
 
 const DynamicTable: React.FC<DynamicTableProps> = ({
   data,
   columns,
-  maxDisplay = 2,
+  cellSize = "medium",
+  showCellBorders = true,
+  textAlignment = "center",
+  maxDisplay = 3,
 }) => {
   const [sortConfigs, setSortConfigs] = useState<
     { key: string; direction: string }[]
   >([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isFiltered, setIsFiltered] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const isFiltered = useMemo(() => sortConfigs.length > 0, [sortConfigs]);
 
-  useEffect(() => {
-    setIsFiltered(sortConfigs.length > 0);
-  }, [sortConfigs]);
-
-  const getIconForType = (type: string) => {
-    type = type.toLowerCase();
-    if (type.includes("int")) {
-      return <FaHashtag size={15} />;
-    } else if (type.includes("varchar")) {
+  const getIconForType = useCallback((type: string) => {
+    const lowerType = type.toLowerCase();
+    if (lowerType.includes("int")) return <FaHashtag size={15} />;
+    if (lowerType.includes("varchar") || lowerType.includes("varying"))
       return <TbAbc size={20} />;
-    }
-    return null;
-  };
+    return <BsColumns size={18} />;
+  }, []);
 
-  const handleSort = (key: string) => {
-    const existingConfig = sortConfigs.find((config) => config.key === key);
-    let newDirection = "asc";
-    if (existingConfig) {
-      if (existingConfig.direction === "asc") {
-        newDirection = "desc";
-      } else if (existingConfig.direction === "desc") {
-        newDirection = "";
+  const handleSort = useCallback((key: string) => {
+    setSortConfigs((prevConfigs) => {
+      const existingConfig = prevConfigs.find((config) => config.key === key);
+      let newDirection = "asc";
+
+      if (existingConfig) {
+        newDirection = existingConfig.direction === "asc" ? "desc" : "";
       }
-    }
 
-    const updatedSortConfigs = sortConfigs.filter(
-      (config) => config.key !== key
-    );
-    if (newDirection) {
-      updatedSortConfigs.push({ key, direction: newDirection });
-    }
+      const updatedConfigs = prevConfigs.filter((config) => config.key !== key);
+      if (newDirection) {
+        updatedConfigs.push({ key, direction: newDirection });
+      }
 
-    setSortConfigs(updatedSortConfigs);
-  };
+      return updatedConfigs;
+    });
+  }, []);
 
-  const handleResetFilters = () => {
+  const handleResetFilters = useCallback(() => {
     setSortConfigs([]);
     setCurrentPage(1);
-  };
+  }, []);
 
-  const sortedData = [...data].sort((a, b) => {
-    for (let config of sortConfigs) {
-      const aValue = a[config.key];
-      const bValue = b[config.key];
-      if (aValue < bValue) {
-        return config.direction === "asc" ? -1 : 1;
+  const sortedData = useMemo(() => {
+    return [...data].sort((a, b) => {
+      for (let config of sortConfigs) {
+        const aValue = a[config.key];
+        const bValue = b[config.key];
+        if (aValue < bValue) return config.direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return config.direction === "asc" ? 1 : -1;
       }
-      if (aValue > bValue) {
-        return config.direction === "asc" ? 1 : -1;
-      }
-    }
-    return 0;
-  });
+      return 0;
+    });
+  }, [data, sortConfigs]);
 
-  const totalPages = Math.ceil(sortedData.length / maxDisplay);
-  const currentData = sortedData.slice(
-    (currentPage - 1) * maxDisplay,
-    currentPage * maxDisplay
+  const totalPages = useMemo(
+    () => Math.ceil(sortedData.length / maxDisplay),
+    [sortedData, maxDisplay]
   );
+  const currentData = useMemo(
+    () =>
+      sortedData.slice(
+        (currentPage - 1) * maxDisplay,
+        currentPage * maxDisplay
+      ),
+    [sortedData, currentPage, maxDisplay]
+  );
+
+  if (!data.length) return <div></div>;
 
   return (
     <div className={styles.tableContainer}>
       <div className={styles.filterControls}>
         <button
           className={`${styles.resetButton} ${
-            isFiltered ? styles.highlighted : ""
+            isFiltered ? styles.highlighted : styles.disabled
           }`}
           onClick={handleResetFilters}
         >
@@ -112,43 +110,34 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         </button>
       </div>
 
-      <table>
+      <table className={showCellBorders ? styles.bordered : styles.noBorder}>
         <thead>
           <tr>
-            {Object.keys(data[0]).map((key) => {
-              const columnInfo = columns.find((col) => col.Field === key);
-              const icon = columnInfo ? getIconForType(columnInfo.Type) : null;
+            {columns.map(({ Field, Type }) => {
               const sortConfig = sortConfigs.find(
-                (config) => config.key === key
+                (config) => config.key === Field
               );
               const isSorted = sortConfig ? sortConfig.direction : null;
 
               return (
-                <th key={key}>
+                <th
+                  key={Field}
+                  className={`${styles.cell} ${styles[cellSize]} ${styles[textAlignment]}`}
+                  onClick={() => handleSort(Field)}
+                >
                   <div className={styles.columnInfo}>
-                    {icon} {key}
-                    {isSorted === "asc" ? (
+                    {getIconForType(Type)} {Field}
+                    {isSorted === "asc" && (
                       <FaSortUp
-                        onClick={() => handleSort(key)}
-                        className={`${styles.sortIcon} ${
-                          isSorted ? styles.active : ""
-                        }`}
-                      />
-                    ) : isSorted === "desc" ? (
-                      <FaSortDown
-                        onClick={() => handleSort(key)}
-                        className={`${styles.sortIcon} ${
-                          isSorted ? styles.active : ""
-                        }`}
-                      />
-                    ) : (
-                      <FaSort
-                        onClick={() => handleSort(key)}
-                        className={`${styles.sortIcon} ${
-                          isSorted ? styles.active : ""
-                        }`}
+                        className={`${styles.sortIcon} ${styles.active}`}
                       />
                     )}
+                    {isSorted === "desc" && (
+                      <FaSortDown
+                        className={`${styles.sortIcon} ${styles.active}`}
+                      />
+                    )}
+                    {!isSorted && <FaSort className={styles.sortIcon} />}
                   </div>
                 </th>
               );
@@ -158,8 +147,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         <tbody>
           {currentData.map((row, index) => (
             <tr key={index}>
-              {Object.keys(row).map((key) => (
-                <td key={key}>{row[key]}</td>
+              {columns.map(({ Field }) => (
+                <td
+                  key={Field}
+                  className={`${styles.cell} ${styles[cellSize]} ${styles[textAlignment]}`}
+                >
+                  <Tooltip message={`${Field}: ${row[Field]?.toString()}`}>
+                    {truncate(row[Field]?.toString() ?? "", 15)}
+                  </Tooltip>
+                </td>
               ))}
             </tr>
           ))}
@@ -182,7 +178,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             className={`${styles.pageButton} ${
               currentPage === 1 ? styles.disabled : ""
             }`}
-            onClick={() => setCurrentPage(currentPage - 1)}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           >
             <IoIosArrowBack />
           </button>
@@ -192,12 +188,13 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             className={`${styles.pageButton} ${
               currentPage === totalPages ? styles.disabled : ""
             }`}
-            onClick={() => setCurrentPage(currentPage + 1)}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
           >
             <IoIosArrowForward />
           </button>
         </span>
-
         <button
           disabled={currentPage === totalPages}
           className={`${styles.pageButton} ${

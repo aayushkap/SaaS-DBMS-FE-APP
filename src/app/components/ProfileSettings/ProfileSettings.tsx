@@ -145,8 +145,6 @@ const SignInForm = ({
   };
 
   function signInWithGitHub() {
-    // console.log("1. signInWithGitHub");
-
     const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
     const redirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;
 
@@ -242,7 +240,7 @@ const SignInForm = ({
       <div className={styles.separator}></div>
 
       <div className={styles.switchButton} onClick={() => setShowSignIn(false)}>
-        Don't have an account?{" "}
+        Don\'t have an account?
         <button className={styles.switch}>Sign Up.</button>
       </div>
     </form>
@@ -320,7 +318,7 @@ const SignUpForm = ({
   };
 
   function signUpWithGitHub() {
-    // console.log("1. signInWithGitHub");
+    //
 
     const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
     const redirectUri = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI;

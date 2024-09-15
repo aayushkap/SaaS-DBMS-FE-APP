@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/index";
 
 import { setUser } from "@/store/slices/userSlice";
-import { setSettings } from "@/store/slices/settingsSlice";
+import { toggleSQLEditor, toggleToolTip } from "@/store/slices/settingsSlice";
 
 import { persistor } from "@/store/index";
 
@@ -18,8 +18,12 @@ export default function TestComponent() {
     dispatch(setUser({ name: "aayushkap", email: "jane.doe@example.com" }));
   };
 
-  const updateSettings = () => {
-    dispatch(setSettings(!settings.activeToolTip));
+  const updateToolTip = () => {
+    dispatch(toggleToolTip());
+  };
+
+  const updateEditor = () => {
+    dispatch(toggleSQLEditor());
   };
 
   return (
@@ -31,7 +35,10 @@ export default function TestComponent() {
       <button onClick={updateUser}>Update User</button>
 
       <p>Active ToolTip: {settings.activeToolTip ? "Yes" : "No"}</p>
-      <button onClick={updateSettings}>Update User</button>
+      <button onClick={updateToolTip}>Toggle Tool Tip</button>
+
+      <p>Active SQL Editor: {settings.showSQLEditor ? "Yes" : "No"}</p>
+      <button onClick={updateEditor}>Toggle Tool Tip</button>
 
       <button onClick={() => persistor.purge()}>Purge Persistor</button>
     </div>

@@ -14,7 +14,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      // console.log("setUser Action called with:", action.payload); // Confirm action payload
+      //  // Confirm action payload
       state.username = action.payload.name;
       state.email = action.payload.email;
       state.isAdmin = action.payload.isAdmin;

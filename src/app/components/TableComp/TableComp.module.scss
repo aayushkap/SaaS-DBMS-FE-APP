@@ -1,5 +1,6 @@
 @import "../../styles/_mixins";
 @import "../../styles/_variables";
+
 $table-border-color: #ddd;
 $table-header-bg-color: #f2f2f2;
 
@@ -13,7 +14,6 @@ $table-header-bg-color: #f2f2f2;
     th,
     td {
       padding: 8px;
-      border: 1px solid $table-border-color; //! Should be adjustable
     }
 
     th {
@@ -24,7 +24,7 @@ $table-header-bg-color: #f2f2f2;
     }
 
     td {
-      text-align: center; // Should be adjustable
+      text-align: center;
     }
 
     svg {
@@ -41,8 +41,6 @@ $table-header-bg-color: #f2f2f2;
   }
 
   .sortIcon {
-    display: inline-block;
-    vertical-align: middle;
     cursor: pointer;
 
     &.active {
@@ -59,40 +57,33 @@ $table-header-bg-color: #f2f2f2;
     width: 100%;
     margin-top: 10px;
 
-    & .centralControls {
+    .centralControls {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
     }
 
-    & .pageButton {
+    .pageButton {
       @include poppinsRegular();
 
       font-size: 0.75rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      letter-spacing: 1.5px;
       padding: 5px 10px;
       border: none;
       border-radius: 5px;
-      color: white;
+      letter-spacing: 1.25px;
       background-color: $secondary-color;
-      text-align: center;
+      color: white;
       cursor: pointer;
 
       &:hover {
-        background-color: lighten($secondary-color, 10%);
+        background-color: darken($secondary-color, 10%);
       }
 
+      &:disabled,
       &.disabled {
         background-color: grey;
         cursor: not-allowed;
-
-        &:hover {
-          background-color: grey;
-        }
       }
     }
   }
@@ -100,24 +91,70 @@ $table-header-bg-color: #f2f2f2;
   .filterControls {
     display: flex;
     justify-content: flex-start;
-    align-items: center;
     gap: 10px;
     margin-bottom: 10px;
 
     .resetButton {
       padding: 5px 10px;
-      border: none;
-      color: white;
       background-color: grey;
+      color: white;
       cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      letter-spacing: 1.25px;
 
       &.highlighted {
         background-color: $secondary-color;
       }
 
+      &.disabled {
+        background-color: grey;
+        cursor: not-allowed;
+      }
+
+      &.disabled:hover {
+        background-color: grey;
+      }
+
       &:hover {
-        background-color: lighten(grey, 10%);
+        background-color: darken($secondary-color, 10%);
       }
     }
+  }
+
+  .cell {
+    &.small {
+      padding: 4px;
+    }
+
+    &.medium {
+      padding: 8px;
+    }
+
+    &.large {
+      padding: 12px;
+    }
+
+    &.left {
+      text-align: left;
+    }
+
+    &.center {
+      text-align: center;
+    }
+
+    &.right {
+      text-align: right;
+    }
+  }
+
+  .bordered th,
+  .bordered td {
+    border: 1px solid $table-border-color;
+  }
+
+  .noBorder th,
+  .noBorder td {
+    border: none;
   }
 }

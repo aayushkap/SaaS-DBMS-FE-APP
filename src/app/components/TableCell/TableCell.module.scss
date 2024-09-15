@@ -54,3 +54,75 @@
 .table {
   width: 100%;
 }
+
+.tableButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+
+  .button {
+    @include poppinsRegular();
+
+    padding: 5px 30px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 1px;
+
+    &.buttonStyle1 {
+      background-color: transparent;
+      color: $secondary-color;
+      border: 2px solid $secondary-color;
+      border-radius: 50px;
+      transition: transform 0.1s ease-out;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      &:active {
+        transform: scale(0.95);
+        color: darken($secondary-color, 10%);
+        border-color: darken($secondary-color, 10%);
+      }
+    }
+
+    &.buttonStyle2 {
+      background-color: $secondary-color;
+      color: $white;
+      border-radius: 50px;
+      transition: transform 0.1s ease-out;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      &:active {
+        transform: scale(0.95);
+        background-color: darken($secondary-color, 10%);
+      }
+    }
+
+    &.buttonStyle3 {
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      transition: transform 0.25s ease-out;
+
+      &:hover {
+        color: $secondary-color;
+        transform: rotate(90deg);
+      }
+
+      &:active {
+        transform: scale(0.95) rotate(90deg);
+        color: darken($secondary-color, 10%);
+      }
+    }
+  }
+}

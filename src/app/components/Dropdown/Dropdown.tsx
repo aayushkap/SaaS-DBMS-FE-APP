@@ -20,6 +20,7 @@ const Dropdown: React.FC<DropdownProps> = ({ options, onSelect }) => {
     <select
       value={selected}
       onChange={handleChange}
+      defaultValue={options[0]}
       className={styles.dropdown}
     >
       {options.length > 0 ? (
@@ -30,7 +31,7 @@ const Dropdown: React.FC<DropdownProps> = ({ options, onSelect }) => {
         ))
       ) : (
         <option value="" className={styles.option}>
-          Add A Connection
+          No Selection
         </option>
       )}
     </select>

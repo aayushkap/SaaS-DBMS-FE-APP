@@ -1,22 +1,5 @@
 // src/api/user.js
 
-// Fetch user data (GET request)
-// export const fetchUserData = async () => {
-//   try {
-//     // console.log("Fetching user data...");
-//     const response = await fetch("http://127.0.0.1:8000/query/get-drivers"); // Adjust the endpoint URL to your backend API
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch user data");
-//     }
-//     const data = await response.json(); // Store the response data
-//     // console.log(data); // Log the data
-//     return data; // Return the data
-//   } catch (error) {
-//     console.error("Error fetching user data:", error);
-//     throw error;
-//   }
-// };
-
 export const createUser = async (userData: any) => {
   try {
     const response = await fetch("http://127.0.0.1:8000/users", {
@@ -38,8 +21,6 @@ export const createUser = async (userData: any) => {
 
 export const fetchAccessToken = async (userData: any) => {
   try {
-    // console.log("Fetching access token...");
-    // console.log(userData);
     const encodedFormData = new URLSearchParams(userData).toString();
 
     const response = await fetch("http://127.0.0.1:8000/users/token", {
@@ -83,8 +64,6 @@ export const fetchUserData = async (idToken: string) => {
 
 export const fetchUserByOAuth = async (userData: any) => {
   try {
-    // console.log("Fetching user data OAuth..." + JSON.stringify(userData));
-
     const response = await fetch("http://127.0.0.1:8000/users/OAuthLogin", {
       method: "POST",
       headers: {
@@ -93,9 +72,6 @@ export const fetchUserByOAuth = async (userData: any) => {
       body: JSON.stringify(userData),
     });
 
-    // Log response status
-    // console.log("Response status: ", response.status);
-
     if (!response.ok) {
       const errorMessage = `Server responded with status: ${response.status}`;
       console.error(errorMessage);
@@ -103,7 +79,7 @@ export const fetchUserByOAuth = async (userData: any) => {
     }
 
     const res = await response.json();
-    // console.log("Response from OAuthLogin: ", res);
+    //
     return res;
   } catch (error: any) {
     console.error("Error caught in catch block:", error.message);

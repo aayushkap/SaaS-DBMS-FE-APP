@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState, useRef } from "react";
 import styles from "./DBMS.module.scss";
 import HeaderCell from "@/app/components/HeaderCell/HeaderCell";
@@ -8,11 +8,16 @@ import ConnectionsCell from "@/app/components/ConnectionsCell/ConnectionsCell";
 import TableCell from "@/app/components/TableCell/TableCell";
 import Dialog from "@/app/components/Dialog/Dialog";
 
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/index";
+
 function DBMS() {
   const [topHeight, setTopHeight] = useState(50); // Initial height as percentage
   const contentAreaRef = useRef<HTMLDivElement | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showSQL, setShowSQL] = useState(true);
+
+  const settings = useSelector((state: RootState) => state.settings);
 
   const handleMouseMove = (e: MouseEvent) => {
     if (contentAreaRef.current) {
@@ -47,6 +52,14 @@ function DBMS() {
       contentAreaRef.current.classList.add(styles["no-transition"]);
     }
   };
+
+  useEffect(() => {
+    if (settings.showSQLEditor) {
+      setShowSQL(true);
+    } else {
+      setShowSQL(false);
+    }
+  }, [settings.showSQLEditor]);
 
   return (
     <>

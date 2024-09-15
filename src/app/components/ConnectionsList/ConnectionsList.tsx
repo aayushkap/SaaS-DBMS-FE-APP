@@ -85,12 +85,10 @@ function ConnectionItemTables({
   tables: any;
   databaseInfo: any;
 }) {
-  // console.log("Tables: ", tables);
+  //
   const dispatch = useDispatch();
 
   function changeActiveTable(tableName: string, tableData: any) {
-    console.log("Changing active database: ", databaseInfo);
-    console.log("Changing active table: ", tableName);
     ``;
     dispatch(setActiveTable(tableName));
     dispatch(setActiveDatabase(databaseInfo));
@@ -124,7 +122,7 @@ export default function ConnectionsList({ filter }: { filter: string }) {
     (state: RootState) => state.connections.connections
   );
 
-  // console.log("In ConnectionsList: ", connections);
+  //
 
   return (
     <div>

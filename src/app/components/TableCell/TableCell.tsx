@@ -7,8 +7,9 @@ import { RootState } from "@/store/index";
 import Dropdown from "../Dropdown/Dropdown";
 
 import { setActiveTable } from "@/store/slices/tableSlice";
-import { table } from "console";
 import DynamicTable from "../TableComp/TableComp";
+import { IoMdSettings } from "react-icons/io";
+import { toggleSQLEditor } from "@/store/slices/settingsSlice";
 
 export default function TableCell() {
   const dispatch = useDispatch();
@@ -22,7 +23,6 @@ export default function TableCell() {
     (state: RootState) => state.table.activeDatabase
   );
 
-  // Safely get table names from activeDatabase's tables
   const tableNames = Object.keys(activeDatabase?.tables ?? {});
 
   // Check if activeTable is not null before accessing tableValues
@@ -34,12 +34,8 @@ export default function TableCell() {
     ? activeDatabase?.tables?.[activeTable]?.column_info
     : [];
 
-  console.log("Table Values: ", tableValues);
-  console.log("Columns: ", columns);
-
   // Function to handle table selection
   function handleTableSelect(tableName: string) {
-    console.log("Selected Table: ", tableName);
     dispatch(setActiveTable(tableName)); // Dispatch action to set the active table
   }
 
@@ -51,20 +47,46 @@ export default function TableCell() {
             <FiRefreshCcw className={styles.icon} />
             <Dropdown options={tableNames} onSelect={handleTableSelect} />
           </div>
-          <div className={styles.tableDescription}>
-            {activeTable
-              ? `Selected Table: ${activeTable}`
-              : "No table selected"}
-          </div>
         </div>
         <div className={styles.view}>Views</div>
-        <div className={styles.buttons}>Buttons</div>
+        <div className={styles.buttons}>
+          <TableButtons />
+        </div>
       </div>
       <div className={styles.table}>
-        {/* You can display more details about the selected table here */}
-        {activeTable && <p>Showing details for: {activeTable}</p>}
         <DynamicTable data={tableValues} columns={columns} />
       </div>
     </section>
+  );
+}
+
+function TableButtons() {
+  const dispatch = useDispatch();
+  function handleSQL() {
+    dispatch(toggleSQLEditor());
+  }
+  function handleExport() {}
+  function handleSettings() {}
+  return (
+    <div className={styles.tableButtons}>
+      <button
+        className={`${styles.button} ${styles.buttonStyle1}`}
+        onClick={handleSQL}
+      >
+        SQL
+      </button>
+      <button
+        className={`${styles.button} ${styles.buttonStyle2}`}
+        onClick={handleExport}
+      >
+        Export
+      </button>
+      <button
+        className={`${styles.button} ${styles.buttonStyle3}`}
+        onClick={handleSettings}
+      >
+        <IoMdSettings size={30} />
+      </button>
+    </div>
   );
 }

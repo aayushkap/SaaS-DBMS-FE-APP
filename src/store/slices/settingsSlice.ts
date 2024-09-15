@@ -3,18 +3,21 @@ import { settingsType } from "@/app/interfaces/users";
 
 const initialState: settingsType = {
   activeToolTip: true,
+  showSQLEditor: false,
 };
 
 const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
-    setSettings(state, action) {
-      // console.log("setSettings Action called with:", action.payload); // Confirm action payload
-      state.activeToolTip = action.payload;
+    toggleToolTip: (state) => {
+      state.activeToolTip = !state.activeToolTip;
+    },
+    toggleSQLEditor: (state) => {
+      state.showSQLEditor = !state.showSQLEditor;
     },
   },
 });
 
-export const { setSettings } = settingsSlice.actions;
+export const { toggleToolTip, toggleSQLEditor } = settingsSlice.actions;
 export default settingsSlice.reducer;

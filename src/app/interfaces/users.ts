@@ -7,4 +7,5 @@ export interface userType {
 
 export interface settingsType {
   activeToolTip: boolean;
+  showSQLEditor: boolean;
 }
