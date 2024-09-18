@@ -14,6 +14,7 @@ import { RootState } from "@/store/index";
 import { addConnection } from "@/store/slices/connectionsSlice";
 
 import AddConnectionComp from "@/app/components/AddConnectionComp/AddConnectionComp";
+import ManageConnectionsComp from "../ManageConnectionsComp/ManageConnectionsComp";
 
 export default function ConnectionControl() {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ export default function ConnectionControl() {
       <ToolTip message="Add Connection">
         <button
           className={styles.connectionButton}
-          onClick={handleOpenDialog(<AddConnection />)}
+          onClick={handleOpenDialog(<AddConnectionComp />)}
         >
           <BsDatabaseFillAdd className={styles.connectionIcon} size={25} />
         </button>
@@ -42,19 +43,11 @@ export default function ConnectionControl() {
       <ToolTip message="Manage Connections">
         <button
           className={styles.connectionButton}
-          onClick={handleOpenDialog(<ManageConnections />)}
+          onClick={handleOpenDialog(<ManageConnectionsComp />)}
         >
           <BsDatabaseFillGear className={styles.connectionIcon} size={25} />
         </button>
       </ToolTip>
     </div>
   );
-}
-
-function AddConnection() {
-  return <AddConnectionComp />;
-}
-
-function ManageConnections() {
-  return <div>Manage Connections</div>;
 }

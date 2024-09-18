@@ -70,6 +70,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     setCurrentPage(1);
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+    handleResetFilters();
+  }, [maxDisplay, data]);
+
   const sortedData = useMemo(() => {
     return [...data].sort((a, b) => {
       for (let config of sortConfigs) {

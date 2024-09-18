@@ -1,3 +1,4 @@
+// This slice is to keep track of all available connections in the UI
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define the state type

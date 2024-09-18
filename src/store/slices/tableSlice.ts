@@ -1,4 +1,4 @@
-// src/redux/dialogSlice.ts
+// This slice is to keep track of the actively shown table and database in the UI
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TableState {

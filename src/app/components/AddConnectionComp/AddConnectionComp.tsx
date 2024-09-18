@@ -1,147 +1,19 @@
 import React, { useState } from "react";
 import styles from "./AddConnectionComp.module.scss";
 
-import { SiMysql } from "react-icons/si";
-import { SiPostgresql } from "react-icons/si";
-import { SiMicrosoftsqlserver } from "react-icons/si";
+import { SiMysql, SiPostgresql, SiMicrosoftsqlserver } from "react-icons/si";
 
 import Tooltip from "../ToolTip/ToolTip";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/index";
 import { addConnection } from "@/store/slices/connectionsSlice";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { testConnection } from "@/app/api/query";
-import { useMutation } from "@tanstack/react-query"; // For react-query v4
+import dbConfig from "@/app/helper/store";
+import truncate from "@/app/helper/helpers";
 
-// Sample JSON configuration
-type DBConfig = {
-  [key: string]: {
-    params: {
-      title: string;
-      type: "input" | "checkbox";
-      inputType?: "text" | "number" | "password";
-      key: string;
-      required?: boolean;
-    }[];
-  };
-};
-
-const dbConfig: DBConfig = {
-  mysql: {
-    params: [
-      {
-        title: "Host",
-        type: "input",
-        inputType: "text",
-        key: "host",
-        required: true,
-      },
-      {
-        title: "Port",
-        type: "input",
-        inputType: "number",
-        key: "port",
-        required: true,
-      },
-      {
-        title: " User",
-        type: "input",
-        inputType: "text",
-        key: "user",
-        required: true,
-      },
-      {
-        title: "Password",
-        type: "input",
-        inputType: "password",
-        key: "password",
-        required: true,
-      },
-      { title: "Use SSL", type: "checkbox", key: "useSSL" },
-    ],
-  },
-  postgres: {
-    params: [
-      {
-        title: "Host",
-        type: "input",
-        inputType: "text",
-        key: "host",
-        required: true,
-      },
-      {
-        title: "Port",
-        type: "input",
-        inputType: "number",
-        key: "port",
-        required: true,
-      },
-      {
-        title: " User",
-        type: "input",
-        inputType: "text",
-        key: "user",
-        required: true,
-      },
-      {
-        title: "Password",
-        type: "input",
-        inputType: "password",
-        key: "password",
-        required: true,
-      },
-      {
-        title: "Database",
-        type: "input",
-        inputType: "text",
-        key: "database",
-        required: true,
-      },
-      {
-        title: "Require SSL",
-        type: "checkbox",
-        key: "requireSSL",
-      },
-    ],
-  },
-  mssql: {
-    params: [
-      {
-        title: "Host",
-        type: "input",
-        inputType: "text",
-        key: "host",
-        required: true,
-      },
-      {
-        title: "Port",
-        type: "input",
-        inputType: "number",
-        key: "port",
-        required: true,
-      },
-      {
-        title: "User",
-        type: "input",
-        inputType: "text",
-        key: "user",
-        required: true,
-      },
-      {
-        title: "Password",
-        type: "input",
-        inputType: "password",
-        key: "password",
-      },
-      {
-        title: "Integrated Security",
-        type: "checkbox",
-        key: "integratedSecurity",
-      },
-    ],
-  },
-};
+import { Loader } from "../Loader1/Loader";
 
 interface CustomFormData {
   [key: string]: string | number | boolean | undefined;
@@ -149,66 +21,98 @@ interface CustomFormData {
 
 export default function ConnectionControl() {
   const dispatch = useDispatch();
-  const [error, setError] = useState<string>("");
-
+  const [message, setMessage] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedDB, setSelectedDB] = useState<string>("");
   const [formData, setFormData] = useState<CustomFormData>({});
 
+  const connections = useSelector(
+    (state: RootState) => state.connections.connections
+  );
+
   const testConnectionMutation = useMutation({
-    mutationFn: (credentials: any) => testConnection(credentials),
+    mutationFn: testConnection,
     onSuccess: (data) => {
       if (data?.SUCCESS) {
-        setError("");
+        setMessage("");
+        const isDuplicate = connections.some(
+          (connection) =>
+            connection.CONNECTION_SUCCESS === data.CONNECTION_SUCCESS &&
+            connection.DATABASE_INFO.name === data.DATABASE_INFO.name &&
+            connection.DATABASE_INFO.type === data.DATABASE_INFO.type
+        );
 
-        const connectionResponse = data.DATABASE_INFO;
-
-        // Add connection to redux store
-        dispatch(addConnection(data));
-
-        // Save connection to redux store
+        if (isDuplicate) {
+          setMessage("Connection already exists");
+        } else {
+          dispatch(addConnection(data));
+        }
       } else {
-        setError("Query Failed");
+        setMessage("Query Failed");
       }
     },
-    onError: () => {
-      setError("Query Failed");
-    },
+    onError: (e) =>
+      setMessage(`Error connecting to database: ${truncate(e.toString(), 50)}`),
   });
 
   const handleDBSelect = (dbType: string) => {
     setSelectedDB(dbType);
-
-    setFormData({ type: dbType });
+    setFormData((prevFormData) => ({ ...prevFormData, type: dbType }));
     setCurrentPage(2);
   };
 
   const handleInputChange = (key: string, value: string | boolean | number) => {
-    setFormData({ ...formData, [key]: value });
+    setFormData((prevFormData) => ({ ...prevFormData, [key]: value }));
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setCurrentPage(3);
-
-    // Dynamically build the params object by looping over formData
-    const params = Object.keys(formData).reduce((acc, key) => {
-      if (formData[key] !== undefined) acc[key] = formData[key];
-      return acc;
-    }, {} as { [key: string]: string | number | boolean });
-
     const credentials = {
-      database_type: selectedDB.toString(),
-      params: params, // Assign the dynamically built params
+      database_type: selectedDB,
+      params: formData,
     };
-
     testConnectionMutation.mutate(credentials);
+    setCurrentPage(3);
   };
 
+  const renderFormFields = () =>
+    dbConfig[selectedDB]?.params.map((param) => (
+      <div className={styles.formField} key={param.key}>
+        <label>{param.title}</label>
+        {param.type === "input" ? (
+          <input
+            type={param.inputType}
+            className={styles.input}
+            required={!!param.required}
+            value={
+              param.inputType === "number"
+                ? (formData[param.key] as number) || ""
+                : (formData[param.key] as string) || ""
+            }
+            onChange={(e) =>
+              handleInputChange(
+                param.key,
+                param.inputType === "number"
+                  ? Number(e.target.value)
+                  : e.target.value
+              )
+            }
+          />
+        ) : (
+          <input
+            type="checkbox"
+            checked={!!formData[param.key]}
+            className={styles.checkbox}
+            onChange={(e) => handleInputChange(param.key, e.target.checked)}
+          />
+        )}
+      </div>
+    ));
+
   return (
-    <div className={styles.formContainer}>
+    <div className={styles.container}>
       {currentPage === 1 && (
-        <>
+        <div className={styles.formContainer}>
           <h3 className={styles.formTitle}>Database Type</h3>
           <div className={styles.dbSelect}>
             <button
@@ -217,14 +121,12 @@ export default function ConnectionControl() {
             >
               <SiMysql className={styles.dbIcon} />
             </button>
-
             <button
               className={styles.dbButton}
               onClick={() => handleDBSelect("postgres")}
             >
               <SiPostgresql className={styles.dbIcon} />
             </button>
-
             <button
               className={styles.dbButton}
               onClick={() => handleDBSelect("mssql")}
@@ -232,52 +134,13 @@ export default function ConnectionControl() {
               <SiMicrosoftsqlserver className={styles.dbIcon} />
             </button>
           </div>
-        </>
+        </div>
       )}
       {currentPage === 2 && (
         <div className={styles.formContainer}>
           <h3 className={styles.formTitle}>{selectedDB.toUpperCase()}</h3>
           <form onSubmit={handleSubmit}>
-            {dbConfig[selectedDB]?.params.map((param) => (
-              <>
-                {param.type === "input" ? (
-                  <div className={styles.formField} key={param.key}>
-                    <label>{param.title}</label>
-                    <input
-                      type={param.inputType}
-                      className={styles.input}
-                      {...(param.required && { required: true })}
-                      value={
-                        param.inputType === "number"
-                          ? (formData[param.key] as number) || ""
-                          : (formData[param.key] as string) || ""
-                      }
-                      onChange={(e) =>
-                        handleInputChange(
-                          param.key,
-                          param.inputType === "number"
-                            ? Number(e.target.value)
-                            : e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                ) : (
-                  <div className={styles.formCheck} key={param.key}>
-                    <label>{param.title}</label>
-                    <input
-                      type="checkbox"
-                      checked={!!formData[param.key] as boolean}
-                      {...(param.required && { required: true })}
-                      className={styles.checkbox}
-                      onChange={(e) =>
-                        handleInputChange(param.key, e.target.checked)
-                      }
-                    />
-                  </div>
-                )}
-              </>
-            ))}
+            {renderFormFields()}
             <div className={styles.formActions}>
               <button type="button" onClick={() => setCurrentPage(1)}>
                 Back
@@ -287,7 +150,22 @@ export default function ConnectionControl() {
           </form>
         </div>
       )}
-      {currentPage === 3 && <div>{error}</div>}
+      {currentPage === 3 &&
+        (testConnectionMutation.isPending ? (
+          <div>
+            <Loader />
+          </div>
+        ) : (
+          <div className={styles.message}>
+            {message}
+            <button
+              className={styles.dbButton}
+              onClick={() => setCurrentPage(2)}
+            >
+              Back to Form
+            </button>
+          </div>
+        ))}
     </div>
   );
 }
