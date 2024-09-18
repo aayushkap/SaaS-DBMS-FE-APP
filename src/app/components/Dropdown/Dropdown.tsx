@@ -1,14 +1,25 @@
 // components/Dropdown.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./Dropdown.module.scss";
 
 interface DropdownProps {
   options: string[];
   onSelect: (value: string) => void;
+  activeTable: string | null;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ options, onSelect }) => {
+const Dropdown: React.FC<DropdownProps> = ({
+  options,
+  onSelect,
+  activeTable,
+}) => {
   const [selected, setSelected] = React.useState<string>(options[0]);
+
+  useEffect(() => {
+    if (activeTable) {
+      setSelected(activeTable);
+    }
+  }, [activeTable]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;

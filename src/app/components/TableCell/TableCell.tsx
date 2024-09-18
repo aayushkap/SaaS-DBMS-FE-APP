@@ -6,10 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/index";
 import Dropdown from "../Dropdown/Dropdown";
 
-import { setActiveTable } from "@/store/slices/tableSlice";
 import DynamicTable from "../TableComp/TableComp";
 import { IoMdSettings } from "react-icons/io";
 import { toggleSQLEditor } from "@/store/slices/settingsSlice";
+import { testConnection } from "@/app/api/query";
+import { useMutation } from "@tanstack/react-query";
+import { setConnections } from "@/store/slices/connectionsSlice";
+import { setActiveTable, setActiveDatabase } from "@/store/slices/tableSlice";
+import { openDialog } from "@/store/slices/dialogSlice";
+import { SiTicktick } from "react-icons/si";
 
 export default function TableCell() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -18,6 +23,16 @@ export default function TableCell() {
   const [textAlignment, setTextAlignment] = useState("center");
 
   const dispatch = useDispatch();
+
+  const handleOpenDialog = (content: JSX.Element) => () => {
+    dispatch(
+      openDialog(
+        <div>
+          <div>{content}</div>
+        </div>
+      )
+    );
+  };
 
   // Selectors for getting state values
   const activeTable = useSelector(
@@ -44,14 +59,100 @@ export default function TableCell() {
     dispatch(setActiveTable(tableName)); // Dispatch action to set the active table
   }
 
+  const connections = useSelector(
+    (state: RootState) => state.connections.connections
+  );
+
+  const testConnectionMutation = useMutation({
+    mutationFn: testConnection,
+    onSuccess: (data) => {
+      if (data?.SUCCESS) {
+        console.log("data", data);
+
+        // Find the matching connection in the Redux store
+        const connectionIndex = connections.findIndex(
+          (connection) =>
+            JSON.stringify(connection.params) === JSON.stringify(data.params)
+        );
+
+        if (connectionIndex !== -1) {
+          // Clone connections array to avoid mutating state directly
+          const updatedConnections = [...connections];
+          // Replace the matching connection with the new one from the API response
+          updatedConnections[connectionIndex] = data;
+
+          // Dispatch updated connections to Redux
+          dispatch(setConnections(updatedConnections));
+
+          if (data?.DATABASE_INFO) {
+            dispatch(setActiveDatabase(data.DATABASE_INFO));
+          }
+
+          console.log("Connection updated successfully.");
+          handleOpenDialog(
+            <div className={styles.dialog}>
+              <SiTicktick size={30} color="green" />
+              <>Refresh successful!</>
+            </div>
+          )();
+          return true; // Return true if update is successful
+        } else {
+          console.log("No matching connection found.");
+          handleOpenDialog(<div>No matching connection found.</div>)();
+          return false; // Return false if no matching connection is found
+        }
+      } else {
+        console.log("Query failed.");
+        handleOpenDialog(<div>Connection Error.</div>)();
+        return false; // Return false if API call is unsuccessful
+      }
+    },
+    onError: (e) => {
+      console.log(`Error connecting to database: ${e.toString()}`);
+      handleOpenDialog(
+        <div>Error connecting to database: {e.toString()}</div>
+      )();
+      return false; // Return false if there's an error
+    },
+  });
+
+  const handleReconnect = () => {
+    console.log("Reconnecting...");
+
+    const credentails = {
+      database_type: activeDatabase?.type,
+      params: activeDatabase?.params,
+    };
+
+    console.log("credentials", credentails);
+
+    testConnectionMutation.mutate(credentails);
+  };
+
   return (
     <section className={styles.container}>
       <div className={styles.header}>
         <div className={styles.tableInfo}>
           <div className={styles.tableName}>
-            <FiRefreshCcw className={styles.icon} />
-            <Dropdown options={tableNames} onSelect={handleTableSelect} />
+            <FiRefreshCcw
+              className={`${styles.icon} ${
+                testConnectionMutation.isPending ? styles.active : ""
+              }`}
+              onClick={() => {
+                handleReconnect();
+              }}
+            />
+            <Dropdown
+              options={tableNames}
+              onSelect={handleTableSelect}
+              activeTable={activeTable}
+            />
           </div>
+          {activeDatabase?.type && (
+            <span className={styles.databaseType}>
+              {activeDatabase?.type} | {activeDatabase?.params?.database}
+            </span>
+          )}
         </div>
         <div className={styles.view}>Views</div>
         <div className={styles.buttons}>

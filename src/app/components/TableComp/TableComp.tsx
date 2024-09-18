@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { FaSort, FaHashtag, FaSortUp, FaSortDown } from "react-icons/fa";
+import {
+  FaSort,
+  FaHashtag,
+  FaSortUp,
+  FaSortDown,
+  FaCalendar,
+  FaOrcid,
+} from "react-icons/fa";
+import { TbDecimal, TbJson } from "react-icons/tb";
 import { BsColumns } from "react-icons/bs";
 import { TbAbc } from "react-icons/tb";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
@@ -44,6 +52,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     if (lowerType.includes("int")) return <FaHashtag size={15} />;
     if (lowerType.includes("varchar") || lowerType.includes("varying"))
       return <TbAbc size={20} />;
+    if (lowerType.includes("date") || lowerType.includes("time"))
+      return <FaCalendar size={15} />;
+    if (
+      lowerType.includes("double") ||
+      lowerType.includes("float" || lowerType.includes("decimal"))
+    )
+      return <TbDecimal size={20} />;
+    if (lowerType.includes("id")) return <FaOrcid size={15} />;
+    if (lowerType.includes("json")) return <TbJson size={15} />;
     return <BsColumns size={18} />;
   }, []);
 

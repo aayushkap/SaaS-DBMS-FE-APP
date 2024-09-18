@@ -7,6 +7,16 @@
   gap: 10px;
 }
 
+.dialog {
+  @include poppinsRegular();
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 50px;
+}
+
 .header {
   display: flex;
   flex-direction: row;
@@ -47,6 +57,20 @@
     &:hover {
       color: $secondary-color;
       transform: rotate(-180deg);
+    }
+
+    &.active {
+      color: $secondary-color;
+      animation: rotateAnim 1.25s infinite linear;
+    }
+
+    @keyframes rotateAnim {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(-360deg);
+      }
     }
   }
 }
@@ -172,4 +196,15 @@
   padding: 1px;
   border-radius: 100px;
   background-color: #cccccc26;
+}
+
+.databaseType {
+  @include poppinsRegular();
+  font-size: 10px;
+  color: gray;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }

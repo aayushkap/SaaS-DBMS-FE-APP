@@ -34,7 +34,7 @@ export default function ConnectionControl() {
     mutationFn: testConnection,
     onSuccess: (data) => {
       if (data?.SUCCESS) {
-        setMessage("");
+        setMessage("Successfully connected to database");
         const isDuplicate = connections.some(
           (connection) =>
             connection.CONNECTION_SUCCESS === data.CONNECTION_SUCCESS &&
@@ -43,7 +43,7 @@ export default function ConnectionControl() {
         );
 
         if (isDuplicate) {
-          setMessage("Connection already exists");
+          setMessage("A similar connection already exists.");
         } else {
           dispatch(addConnection(data));
         }
@@ -162,7 +162,7 @@ export default function ConnectionControl() {
               className={styles.dbButton}
               onClick={() => setCurrentPage(2)}
             >
-              Back to Form
+              Go Back
             </button>
           </div>
         ))}

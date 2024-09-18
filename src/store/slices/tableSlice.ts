@@ -18,11 +18,16 @@ const tableSlice = createSlice({
     setActiveDatabase: (state, action: PayloadAction<Record<string, any>>) => {
       state.activeDatabase = action.payload;
     },
+    clearActiveDatabase: (state) => {
+      state.activeDatabase = null;
+      state.activeTable = null;
+    },
     setActiveTable: (state, action: PayloadAction<string>) => {
       state.activeTable = action.payload;
     },
   },
 });
 
-export const { setActiveTable, setActiveDatabase } = tableSlice.actions;
+export const { setActiveTable, setActiveDatabase, clearActiveDatabase } =
+  tableSlice.actions;
 export default tableSlice.reducer;
