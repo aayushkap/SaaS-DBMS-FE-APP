@@ -14,6 +14,7 @@ import dbConfig from "@/app/helper/store";
 import truncate from "@/app/helper/helpers";
 
 import { Loader } from "../Loader1/Loader";
+import { useTestConnectionMutation } from "@/app/helper/genericMutations";
 
 interface CustomFormData {
   [key: string]: string | number | boolean | undefined;
@@ -30,30 +31,30 @@ export default function ConnectionControl() {
     (state: RootState) => state.connections.connections
   );
 
-  const testConnectionMutation = useMutation({
-    mutationFn: testConnection,
-    onSuccess: (data) => {
-      if (data?.SUCCESS) {
-        setMessage("Successfully connected to database");
-        const isDuplicate = connections.some(
-          (connection) =>
-            connection.CONNECTION_SUCCESS === data.CONNECTION_SUCCESS &&
-            connection.DATABASE_INFO.name === data.DATABASE_INFO.name &&
-            connection.DATABASE_INFO.type === data.DATABASE_INFO.type
-        );
+  // const testConnectionMutation = useMutation({
+  //   mutationFn: testConnection,
+  //   onSuccess: (data) => {
+  //     if (data?.SUCCESS) {
+  //       setMessage("Successfully connected to database");
+  //       const isDuplicate = connections.some(
+  //         (connection) =>
+  //           connection.CONNECTION_SUCCESS === data.CONNECTION_SUCCESS &&
+  //           connection.DATABASE_INFO.name === data.DATABASE_INFO.name &&
+  //           connection.DATABASE_INFO.type === data.DATABASE_INFO.type
+  //       );
 
-        if (isDuplicate) {
-          setMessage("A similar connection already exists.");
-        } else {
-          dispatch(addConnection(data));
-        }
-      } else {
-        setMessage("Query Failed");
-      }
-    },
-    onError: (e) =>
-      setMessage(`Error connecting to database: ${truncate(e.toString(), 50)}`),
-  });
+  //       if (isDuplicate) {
+  //         setMessage("A similar connection already exists.");
+  //       } else {
+  //         dispatch(addConnection(data));
+  //       }
+  //     } else {
+  //       setMessage("Query Failed");
+  //     }
+  //   },
+  //   onError: (e) =>
+  //     setMessage(`Error connecting to database: ${truncate(e.toString(), 50)}`),
+  // });
 
   const handleDBSelect = (dbType: string) => {
     setSelectedDB(dbType);
@@ -65,14 +66,36 @@ export default function ConnectionControl() {
     setFormData((prevFormData) => ({ ...prevFormData, [key]: value }));
   };
 
+  const {
+    mutate: testConnection,
+    isPending: isTestConnectionPending,
+    isError,
+    isSuccess,
+    error,
+    data,
+  } = useTestConnectionMutation();
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const credentials = {
       database_type: selectedDB,
       params: formData,
     };
-    testConnectionMutation.mutate(credentials);
+
     setCurrentPage(3);
+
+    testConnection(credentials, {
+      onSuccess: (data) => {
+        console.log("Added Connection Success", data);
+        setMessage("Successfully connected to database!");
+      },
+      onError: (error) => {
+        console.log("Failed To Add Connection", error);
+        setMessage(
+          `Error connecting to database: ${truncate(error.toString(), 50)}`
+        );
+      },
+    });
   };
 
   const renderFormFields = () =>
@@ -151,7 +174,7 @@ export default function ConnectionControl() {
         </div>
       )}
       {currentPage === 3 &&
-        (testConnectionMutation.isPending ? (
+        (isTestConnectionPending ? (
           <div>
             <Loader />
           </div>

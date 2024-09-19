@@ -5,7 +5,7 @@ import truncate from "@/app/helper/helpers";
 
 import { setConnections, addConnection } from "@/store/slices/connectionsSlice";
 import { clearActiveDatabase } from "@/store/slices/tableSlice";
-import { SiManageiq } from "react-icons/si";
+import { SiManageiq, SiTicktick } from "react-icons/si";
 
 import {
   BsDatabaseFillCheck,
@@ -15,11 +15,13 @@ import {
   BsFillArrowUpRightCircleFill,
 } from "react-icons/bs";
 import { PiTableDuotone } from "react-icons/pi";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdSmsFailed } from "react-icons/md";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/index";
 import styles from "./ManageConnectionsComp.module.scss";
+import { FiRefreshCcw } from "react-icons/fi";
+import { useTestConnectionMutation } from "@/app/helper/genericMutations";
 
 function ConnectionListItem({
   response,
@@ -33,9 +35,7 @@ function ConnectionListItem({
   const { DATABASE_INFO, CONNECTION_SUCCESS } = response;
 
   const handleDatabaseInfo = () => {
-    if (databaseInfo) {
-      setDatabaseInfo(null);
-    } else {
+    if (response) {
       setDatabaseInfo(response);
     }
   };
@@ -50,6 +50,31 @@ function ConnectionListItem({
     setDatabaseInfo(null);
     dispatch(clearActiveDatabase());
     dispatch(setConnections(connections.filter((item) => item !== response)));
+  };
+
+  const {
+    mutate: testConnection,
+    isPending: isTestConnectionPending,
+    isError,
+    isSuccess,
+    error,
+    data,
+  } = useTestConnectionMutation();
+
+  const handleReconnect = () => {
+    const credentials = {
+      database_type: response?.DATABASE_INFO?.type,
+      params: response?.DATABASE_INFO?.params,
+    };
+
+    testConnection(credentials, {
+      onSuccess: (data) => {
+        console.log("Reconnection successful. Data:", data);
+      },
+      onError: (error) => {
+        console.log("Reconnection failed. Error:", error);
+      },
+    });
   };
 
   return (
@@ -72,12 +97,33 @@ function ConnectionListItem({
           {truncate(DATABASE_INFO?.params?.database ?? "", 20)}
         </div>
         <div className={styles.connectionIcons}>
-          <ToolTip message="Delete Connection">
-            <MdDeleteForever size={25} onClick={() => handleDatabaseDelete()} />
-          </ToolTip>
           <ToolTip message="Show Connection Info">
             <SiManageiq size={22} onClick={() => handleDatabaseInfo()} />
           </ToolTip>
+          <ToolTip message="Delete Connection">
+            <MdDeleteForever size={25} onClick={() => handleDatabaseDelete()} />
+          </ToolTip>
+          <ToolTip message="Test Connection">
+            <FiRefreshCcw
+              className={`${styles.icon} ${
+                isTestConnectionPending ? styles.active : ""
+              }`}
+              size={18}
+              onClick={() => {
+                handleReconnect();
+              }}
+            />
+          </ToolTip>
+          {isError && (
+            <ToolTip message={error?.message}>
+              <MdSmsFailed size={20} color="red" />
+            </ToolTip>
+          )}
+          {isSuccess && (
+            <ToolTip message="Connection Successful">
+              <SiTicktick size={20} color="green" />
+            </ToolTip>
+          )}
         </div>
       </div>
     </div>
@@ -94,18 +140,20 @@ export default function ManageConnectionsComp() {
     <div
       className={`${styles.container} ${databaseInfo ? styles.expanded : ""}`}
     >
-      {connections.length > 0 ? (
-        connections.map((response, index) => (
-          <ConnectionListItem
-            key={index}
-            response={response}
-            databaseInfo={databaseInfo}
-            setDatabaseInfo={setDatabaseInfo}
-          />
-        ))
-      ) : (
-        <p>No Connections.</p>
-      )}
+      <div className={styles.connectionList}>
+        {connections.length > 0 ? (
+          connections.map((response, index) => (
+            <ConnectionListItem
+              key={index}
+              response={response}
+              databaseInfo={databaseInfo}
+              setDatabaseInfo={setDatabaseInfo}
+            />
+          ))
+        ) : (
+          <p>No Connections.</p>
+        )}{" "}
+      </div>
       {databaseInfo && <div className={styles.verticalDivider} />}
       {databaseInfo && (
         <>

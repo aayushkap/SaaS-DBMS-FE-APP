@@ -15,6 +15,7 @@ import { setConnections } from "@/store/slices/connectionsSlice";
 import { setActiveTable, setActiveDatabase } from "@/store/slices/tableSlice";
 import { openDialog } from "@/store/slices/dialogSlice";
 import { SiTicktick } from "react-icons/si";
+import { useTestConnectionMutation } from "@/app/helper/genericMutations";
 
 export default function TableCell() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -63,72 +64,96 @@ export default function TableCell() {
     (state: RootState) => state.connections.connections
   );
 
-  const testConnectionMutation = useMutation({
-    mutationFn: testConnection,
-    onSuccess: (data) => {
-      if (data?.SUCCESS) {
-        console.log("data", data);
+  // const testConnectionMutation = useMutation({
+  //   mutationFn: testConnection,
+  //   onSuccess: (data) => {
+  //     if (data?.SUCCESS) {
+  //       console.log("data", data);
 
-        // Find the matching connection in the Redux store
-        const connectionIndex = connections.findIndex(
-          (connection) =>
-            JSON.stringify(connection.params) === JSON.stringify(data.params)
-        );
+  //       // Find the matching connection in the Redux store
+  //       const connectionIndex = connections.findIndex(
+  //         (connection) =>
+  //           JSON.stringify(connection.params) === JSON.stringify(data.params)
+  //       );
 
-        if (connectionIndex !== -1) {
-          // Clone connections array to avoid mutating state directly
-          const updatedConnections = [...connections];
-          // Replace the matching connection with the new one from the API response
-          updatedConnections[connectionIndex] = data;
+  //       if (connectionIndex !== -1) {
+  //         // Clone connections array to avoid mutating state directly
+  //         const updatedConnections = [...connections];
+  //         // Replace the matching connection with the new one from the API response
+  //         updatedConnections[connectionIndex] = data;
 
-          // Dispatch updated connections to Redux
-          dispatch(setConnections(updatedConnections));
+  //         // Dispatch updated connections to Redux
+  //         dispatch(setConnections(updatedConnections));
 
-          if (data?.DATABASE_INFO) {
-            dispatch(setActiveDatabase(data.DATABASE_INFO));
-          }
+  //         if (data?.DATABASE_INFO) {
+  //           dispatch(setActiveDatabase(data.DATABASE_INFO));
+  //         }
 
-          console.log("Connection updated successfully.");
-          handleOpenDialog(
-            <div className={styles.dialog}>
-              <SiTicktick size={30} color="green" />
-              <>Refresh successful!</>
-            </div>
-          )();
-          return true; // Return true if update is successful
-        } else {
-          console.log("No matching connection found.");
-          handleOpenDialog(<div>No matching connection found.</div>)();
-          return false; // Return false if no matching connection is found
-        }
-      } else {
-        console.log("Query failed.");
-        handleOpenDialog(<div>Connection Error.</div>)();
-        return false; // Return false if API call is unsuccessful
-      }
-    },
-    onError: (e) => {
-      console.log(`Error connecting to database: ${e.toString()}`);
-      handleOpenDialog(
-        <div>Error connecting to database: {e.toString()}</div>
-      )();
-      return false; // Return false if there's an error
-    },
-  });
+  //         console.log("Connection updated successfully.");
+  //         handleOpenDialog(
+  //           <div className={styles.dialog}>
+  //             <SiTicktick size={30} color="green" />
+  //             <>Refresh successful!</>
+  //           </div>
+  //         )();
+  //         return true; // Return true if update is successful
+  //       } else {
+  //         console.log("No matching connection found.");
+  //         handleOpenDialog(<div>No matching connection found.</div>)();
+  //         return false; // Return false if no matching connection is found
+  //       }
+  //     } else {
+  //       console.log("Query failed.");
+  //       handleOpenDialog(<div>Connection Error.</div>)();
+  //       return false; // Return false if API call is unsuccessful
+  //     }
+  //   },
+  //   onError: (e) => {
+  //     console.log(`Error connecting to database: ${e.toString()}`);
+  //     handleOpenDialog(
+  //       <div>Error connecting to database: {e.toString()}</div>
+  //     )();
+  //     return false; // Return false if there's an error
+  //   },
+  // });
+
+  const {
+    mutate: testConnection,
+    isPending: isTestConnectionPending,
+    isError,
+    isSuccess,
+    error,
+    data,
+  } = useTestConnectionMutation();
 
   const handleReconnect = () => {
     console.log("Reconnecting...");
 
-    const credentails = {
+    const credentials = {
       database_type: activeDatabase?.type,
       params: activeDatabase?.params,
     };
 
-    console.log("credentials", credentails);
-
-    testConnectionMutation.mutate(credentails);
+    testConnection(credentials, {
+      onSuccess: (data) => {
+        console.log("Reconnection successful. Data:", data);
+        handleOpenDialog(
+          <div className={styles.dialog}>
+            <SiTicktick size={30} color="green" />
+            <>Refresh successful!</>
+          </div>
+        )();
+      },
+      onError: (error) => {
+        console.log("Reconnection failed. Error:", error);
+        handleOpenDialog(
+          <div className={styles.dialog}>
+            <>Error connecting to database: {error.toString()}</>
+          </div>
+        )();
+      },
+    });
   };
-
   return (
     <section className={styles.container}>
       <div className={styles.header}>
@@ -136,7 +161,7 @@ export default function TableCell() {
           <div className={styles.tableName}>
             <FiRefreshCcw
               className={`${styles.icon} ${
-                testConnectionMutation.isPending ? styles.active : ""
+                isTestConnectionPending ? styles.active : ""
               }`}
               onClick={() => {
                 handleReconnect();
