@@ -50,7 +50,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const getIconForType = useCallback((type: string) => {
     const lowerType = type.toLowerCase();
     if (lowerType.includes("int")) return <FaHashtag size={15} />;
-    if (lowerType.includes("varchar") || lowerType.includes("varying"))
+    if (lowerType.includes("char") || lowerType.includes("text"))
       return <TbAbc size={20} />;
     if (lowerType.includes("date") || lowerType.includes("time"))
       return <FaCalendar size={15} />;

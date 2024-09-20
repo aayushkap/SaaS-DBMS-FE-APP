@@ -179,7 +179,6 @@ export default function TableCell() {
             </span>
           )}
         </div>
-        <div className={styles.view}>Views</div>
         <div className={styles.buttons}>
           <TableButtons
             rowsPerPage={rowsPerPage}
