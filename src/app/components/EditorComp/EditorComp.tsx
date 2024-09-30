@@ -184,6 +184,11 @@ function QueryResultComp({
   isPending: boolean;
   results?: any;
 }) {
+  const dispatch = useDispatch();
+  const activeDatabase = useSelector(
+    (state: RootState) => state.table.activeDatabase
+  );
+
   if (isPending) {
     return (
       <div className={styles.dialogBox}>
@@ -207,19 +212,11 @@ function QueryResultComp({
     }
   }
 
-  const dispatch = useDispatch();
-
-  const activeDatabase = useSelector(
-    (state: RootState) => state.table.activeDatabase
-  );
-
   function handleShowRows(result: any) {
     console.log("Show Rows: ", result);
 
     dispatch(setShowQueries(true));
     dispatch(setActiveTable(result.sql));
-
-    // To Active Database, add a queries key with a list of the results
   }
 
   return (
