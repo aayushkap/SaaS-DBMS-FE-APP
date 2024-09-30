@@ -68,12 +68,8 @@ function ConnectionListItem({
     };
 
     testConnection(credentials, {
-      onSuccess: (data) => {
-        console.log("Reconnection successful. Data:", data);
-      },
-      onError: (error) => {
-        console.log("Reconnection failed. Error:", error);
-      },
+      onSuccess: (data) => {},
+      onError: (error) => {},
     });
   };
 

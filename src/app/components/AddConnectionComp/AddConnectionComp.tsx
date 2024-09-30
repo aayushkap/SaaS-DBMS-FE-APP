@@ -86,11 +86,9 @@ export default function ConnectionControl() {
 
     testConnection(credentials, {
       onSuccess: (data) => {
-        console.log("Added Connection Success", data);
         setMessage("Successfully connected to database!");
       },
       onError: (error) => {
-        console.log("Failed To Add Connection", error);
         setMessage(
           `Error connecting to database: ${truncate(error.toString(), 50)}`
         );

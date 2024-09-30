@@ -1,6 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { addConnection, setConnections } from "@/store/slices/connectionsSlice";
-import { setActiveTable, setActiveDatabase } from "@/store/slices/tableSlice";
+import {
+  setActiveTable,
+  setActiveDatabase,
+  setShowQueries,
+} from "@/store/slices/tableSlice";
 import { testConnection } from "@/app/api/query";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/index";
@@ -39,7 +43,6 @@ export const useTestConnectionMutation = () => {
         throw new Error("Connection unsuccessful.");
       }
 
-      console.log("data", data);
       const connectionIndex = findConnectionIndex(data.params);
       const updatedConnections = [...connections];
 
@@ -55,6 +58,8 @@ export const useTestConnectionMutation = () => {
       if (data.DATABASE_INFO) {
         dispatch(setActiveDatabase(data.DATABASE_INFO));
         dispatch(setActiveTable(Object.keys(data?.DATABASE_INFO?.tables)[0]));
+        console.log("Active Database set successfully.");
+        setShowQueries(false);
       }
 
       return true;

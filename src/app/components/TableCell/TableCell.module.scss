@@ -208,3 +208,17 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.sqlQuery {
+  @include poppinsRegular();
+  font-size: 0.9rem;
+  font-weight: 300;
+  letter-spacing: 0.1px;
+  color: $black;
+  margin-top: 10px;
+
+  & span {
+    color: $secondary-color;
+    font-weight: 600;
+  }
+}

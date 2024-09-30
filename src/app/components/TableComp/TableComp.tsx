@@ -48,7 +48,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const isFiltered = useMemo(() => sortConfigs.length > 0, [sortConfigs]);
 
   const getIconForType = useCallback((type: string) => {
-    const lowerType = type.toLowerCase();
+    const lowerType = type?.toLowerCase() ?? "";
     if (lowerType.includes("int")) return <FaHashtag size={15} />;
     if (lowerType.includes("char") || lowerType.includes("text"))
       return <TbAbc size={20} />;

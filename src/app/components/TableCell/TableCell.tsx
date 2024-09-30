@@ -12,7 +12,11 @@ import { toggleSQLEditor } from "@/store/slices/settingsSlice";
 import { testConnection } from "@/app/api/query";
 import { useMutation } from "@tanstack/react-query";
 import { setConnections } from "@/store/slices/connectionsSlice";
-import { setActiveTable, setActiveDatabase } from "@/store/slices/tableSlice";
+import {
+  setActiveTable,
+  setActiveDatabase,
+  setShowQueries,
+} from "@/store/slices/tableSlice";
 import { openDialog } from "@/store/slices/dialogSlice";
 import { SiTicktick } from "react-icons/si";
 import { useTestConnectionMutation } from "@/app/helper/genericMutations";
@@ -44,16 +48,74 @@ export default function TableCell() {
     (state: RootState) => state.table.activeDatabase
   );
 
-  const tableNames = Object.keys(activeDatabase?.tables ?? {});
+  const showingQueries = useSelector(
+    (state: RootState) => state.table.showingQueries
+  );
 
-  // Check if activeTable is not null before accessing tableValues
-  const tableValues = activeTable
-    ? activeDatabase?.tables?.[activeTable]?.sample_data ?? []
-    : [];
+  let tableNames: string[] = [];
+  let tableValues: any[] = [];
+  let columns: any[] = [];
 
-  const columns = activeTable
-    ? activeDatabase?.tables?.[activeTable]?.column_info
-    : [];
+  if (!showingQueries) {
+    tableNames = Object.keys(activeDatabase?.tables ?? {});
+
+    // Check if activeTable is not null before accessing tableValues
+    tableValues = activeTable
+      ? activeDatabase?.tables?.[activeTable]?.sample_data ?? []
+      : [];
+    columns = activeTable
+      ? activeDatabase?.tables?.[activeTable]?.column_info
+      : [];
+  } else {
+    console.log("showingQueries", showingQueries);
+    const queries =
+      activeDatabase?.queries?.filter(
+        (query: any) => query.result_type === "ROWS"
+      ) ?? [];
+
+    console.log("queries", queries);
+
+    queries.forEach((query: any) => {
+      tableNames.push(query?.sql ?? ""); // Collect SQL queries
+    });
+
+    if (activeTable) {
+      const matchingQuery = queries.find(
+        (query: any) => query.sql === activeTable
+      );
+
+      if (matchingQuery) {
+        console.log("matchingQuery", matchingQuery);
+        console.log("matchingQuery.result", matchingQuery.result);
+        console.log("matchingQuery.column_info", matchingQuery.column_info);
+        tableValues = matchingQuery.result; // Get the result of the matching query
+        columns = matchingQuery.column_info; // Get the column information of the matching query
+      }
+    } else {
+      console.log("No active table");
+      const activeTable = tableNames[0];
+      console.log("activeTable", activeTable);
+
+      const matchingQuery = queries.find(
+        (query: any) => query.sql === activeTable
+      );
+
+      if (matchingQuery) {
+        console.log("matchingQuery", matchingQuery);
+        console.log("matchingQuery.result", matchingQuery.result);
+        console.log("matchingQuery.column_info", matchingQuery.column_info);
+        tableValues = matchingQuery.result; // Get the result of the matching query
+        columns = matchingQuery.column_info; // Get the column information of the matching query
+      }
+    }
+  }
+
+  console.log("tableNames", tableNames);
+  console.log("showingQueries", showingQueries);
+  console.log("activeTable", activeTable);
+  console.log("activeDatabase", activeDatabase);
+  console.log("tableValues", tableValues);
+  console.log("columns", columns);
 
   // Function to handle table selection
   function handleTableSelect(tableName: string) {
@@ -64,71 +126,10 @@ export default function TableCell() {
     (state: RootState) => state.connections.connections
   );
 
-  // const testConnectionMutation = useMutation({
-  //   mutationFn: testConnection,
-  //   onSuccess: (data) => {
-  //     if (data?.SUCCESS) {
-  //       console.log("data", data);
-
-  //       // Find the matching connection in the Redux store
-  //       const connectionIndex = connections.findIndex(
-  //         (connection) =>
-  //           JSON.stringify(connection.params) === JSON.stringify(data.params)
-  //       );
-
-  //       if (connectionIndex !== -1) {
-  //         // Clone connections array to avoid mutating state directly
-  //         const updatedConnections = [...connections];
-  //         // Replace the matching connection with the new one from the API response
-  //         updatedConnections[connectionIndex] = data;
-
-  //         // Dispatch updated connections to Redux
-  //         dispatch(setConnections(updatedConnections));
-
-  //         if (data?.DATABASE_INFO) {
-  //           dispatch(setActiveDatabase(data.DATABASE_INFO));
-  //         }
-
-  //         console.log("Connection updated successfully.");
-  //         handleOpenDialog(
-  //           <div className={styles.dialog}>
-  //             <SiTicktick size={30} color="green" />
-  //             <>Refresh successful!</>
-  //           </div>
-  //         )();
-  //         return true; // Return true if update is successful
-  //       } else {
-  //         console.log("No matching connection found.");
-  //         handleOpenDialog(<div>No matching connection found.</div>)();
-  //         return false; // Return false if no matching connection is found
-  //       }
-  //     } else {
-  //       console.log("Query failed.");
-  //       handleOpenDialog(<div>Connection Error.</div>)();
-  //       return false; // Return false if API call is unsuccessful
-  //     }
-  //   },
-  //   onError: (e) => {
-  //     console.log(`Error connecting to database: ${e.toString()}`);
-  //     handleOpenDialog(
-  //       <div>Error connecting to database: {e.toString()}</div>
-  //     )();
-  //     return false; // Return false if there's an error
-  //   },
-  // });
-
-  const {
-    mutate: testConnection,
-    isPending: isTestConnectionPending,
-    isError,
-    isSuccess,
-    error,
-    data,
-  } = useTestConnectionMutation();
+  const { mutate: testConnection, isPending: isTestConnectionPending } =
+    useTestConnectionMutation();
 
   const handleReconnect = () => {
-    console.log("Reconnecting...");
-
     const credentials = {
       database_type: activeDatabase?.type,
       params: activeDatabase?.params,
@@ -154,6 +155,7 @@ export default function TableCell() {
       },
     });
   };
+
   return (
     <section className={styles.container}>
       <div className={styles.header}>
@@ -175,7 +177,7 @@ export default function TableCell() {
           </div>
           {activeDatabase?.type && (
             <span className={styles.databaseType}>
-              {activeDatabase?.type} | {activeDatabase?.params?.database}
+              {activeDatabase?.type} | {activeDatabase?.params?.database}{" "}
             </span>
           )}
         </div>
@@ -192,6 +194,15 @@ export default function TableCell() {
           />
         </div>
       </div>
+
+      {showingQueries && activeTable ? (
+        <div className={styles.sqlQuery}>
+          <span>Query: </span> {activeTable}
+        </div>
+      ) : (
+        ""
+      )}
+
       <div className={styles.table}>
         <DynamicTable
           data={tableValues}

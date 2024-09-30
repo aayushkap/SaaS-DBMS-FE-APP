@@ -11,17 +11,22 @@
 
 .tooltip {
   position: absolute;
-  bottom: -100%;
-  left: -20%;
+  top: calc(100% + 5px); /* Positions the tooltip below the element */
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 100;
-  padding: 2px;
-  border: 2px solid #543f19;
-  border-radius: 2px;
+  padding: 5px;
+  border: 1px solid #543f19;
+  border-radius: 3px;
   color: #fff;
   background-color: #f5b642;
   font-size: 0.7rem;
-  white-space: nowrap;
-  pointer-events: none; /* Prevent tooltip from blocking hover events */
+  pointer-events: none;
   user-select: none;
   font-weight: bold;
+
+  /* Dynamic size handling */
+  min-width: 25px;
+  max-width: 300px; /* Set max width for when content is larger */
+  white-space: pre-wrap; /* Allows breaking of long content without overflowing */
 }

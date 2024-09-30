@@ -284,7 +284,6 @@ const SignUpForm = ({
       setPassword("");
     },
     onError: (error) => {
-      console.error("Unable to create user. Please try again.");
       setError("Failed to create user.");
     },
   });

@@ -1,6 +1,6 @@
-// components/Dropdown.tsx
 import React, { useEffect } from "react";
 import styles from "./Dropdown.module.scss";
+import truncate from "@/app/helper/helpers";
 
 interface DropdownProps {
   options: string[];
@@ -16,10 +16,12 @@ const Dropdown: React.FC<DropdownProps> = ({
   const [selected, setSelected] = React.useState<string>(options[0]);
 
   useEffect(() => {
-    if (activeTable) {
-      setSelected(activeTable);
+    if (activeTable && options.includes(activeTable)) {
+      setSelected(activeTable); // Set without truncation
+    } else {
+      setSelected(options[0]); // Default to first option if no active table
     }
-  }, [activeTable]);
+  }, [activeTable, options]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -31,13 +33,12 @@ const Dropdown: React.FC<DropdownProps> = ({
     <select
       value={selected}
       onChange={handleChange}
-      defaultValue={options[0]}
       className={styles.dropdown}
     >
       {options.length > 0 ? (
         options.map((option) => (
           <option key={option} value={option} className={styles.option}>
-            {option}
+            {option === selected ? truncate(option, 20) : truncate(option, 30)}
           </option>
         ))
       ) : (

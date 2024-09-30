@@ -5,7 +5,11 @@ import ToolTip from "@/app/components/ToolTip/ToolTip";
 import truncate from "@/app/helper/helpers";
 
 import { setConnections, addConnection } from "@/store/slices/connectionsSlice";
-import { setActiveTable, setActiveDatabase } from "@/store/slices/tableSlice";
+import {
+  setActiveTable,
+  setActiveDatabase,
+  setShowQueries,
+} from "@/store/slices/tableSlice";
 
 import {
   BsDatabaseFillCheck,
@@ -82,6 +86,7 @@ function ConnectionItemTables({
   const changeActiveTable = (tableName: string, tableData: any) => {
     dispatch(setActiveTable(tableName));
     dispatch(setActiveDatabase(databaseInfo));
+    dispatch(setShowQueries(false));
   };
 
   return (

@@ -34,7 +34,6 @@ function OAuthCallback() {
       }
     },
     onError: (error) => {
-      console.error("Error fetching user data:", error);
       setLoginStatus("Failed to authenticate user: " + error);
     },
   });

@@ -14,7 +14,6 @@ export const createUser = async (userData: any) => {
     }
     return await response.json();
   } catch (error) {
-    console.error("Error creating user:", error);
     throw error;
   }
 };
@@ -35,7 +34,6 @@ export const fetchAccessToken = async (userData: any) => {
     }
     return await response.json();
   } catch (error) {
-    console.error("Error creating user:", error);
     throw error;
   }
 };
@@ -57,7 +55,6 @@ export const fetchUserData = async (idToken: string) => {
     const data = await response.json();
     return data; // Expecting the user data from the response
   } catch (error) {
-    console.error("Error fetching user data:", error);
     throw error;
   }
 };
@@ -74,7 +71,6 @@ export const fetchUserByOAuth = async (userData: any) => {
 
     if (!response.ok) {
       const errorMessage = `Server responded with status: ${response.status}`;
-      console.error(errorMessage);
       throw new Error(errorMessage);
     }
 
@@ -82,8 +78,6 @@ export const fetchUserByOAuth = async (userData: any) => {
     //
     return res;
   } catch (error: any) {
-    console.error("Error caught in catch block:", error.message);
-    console.error("Stack trace:", error.stack);
     throw error;
   }
 };

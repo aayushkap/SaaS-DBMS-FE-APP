@@ -1,0 +1,77 @@
+@import "../../styles/_mixins";
+@import "../../styles/_variables";
+
+.dialogBox {
+  @include poppinsRegular();
+  font-size: 15px;
+  min-width: 300px;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.results {
+  display: flex;
+  justify-content: center;
+  align-items: left;
+  flex-direction: column;
+}
+
+.resultsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  font-size: 0.9rem;
+}
+
+.lineNumber,
+.sqlStatement,
+.resultType,
+.result {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.lineNumber {
+  width: 5%;
+}
+
+.resultRow:nth-child(odd) {
+  background-color: $white;
+}
+
+.resultRow:nth-child(even) {
+  background-color: darken($white, 5%);
+}
+
+.lineCell,
+.sqlCell,
+.typeCell,
+.resultCell {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+.resultIcon {
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s; // Added transition for color
+
+  &:hover {
+    color: $secondary-color; // Ensure this variable is defined
+    transform: scale(1.1); // Use transform for scaling
+  }
+
+  &:active {
+    transform: scale(0.9); // Use transform for scaling
+  }
+}
+
+.text {
+  white-space: pre-wrap;
+  text-wrap: pretty;
+  max-width: 400px;
+}

@@ -4,11 +4,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface TableState {
   activeTable: string | null;
   activeDatabase: Record<string, any> | null; // General object type
+  showingQueries: boolean;
 }
 
 const initialState: TableState = {
   activeTable: null,
   activeDatabase: null,
+  showingQueries: false,
 };
 
 const tableSlice = createSlice({
@@ -25,9 +27,17 @@ const tableSlice = createSlice({
     setActiveTable: (state, action: PayloadAction<string>) => {
       state.activeTable = action.payload;
     },
+    setShowQueries: (state, action: PayloadAction<boolean>) => {
+      console.log("Setting show queries to", action.payload);
+      state.showingQueries = action.payload;
+    },
   },
 });
 
-export const { setActiveTable, setActiveDatabase, clearActiveDatabase } =
-  tableSlice.actions;
+export const {
+  setActiveTable,
+  setActiveDatabase,
+  clearActiveDatabase,
+  setShowQueries,
+} = tableSlice.actions;
 export default tableSlice.reducer;

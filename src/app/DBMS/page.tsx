@@ -7,6 +7,7 @@ import HeaderCell from "@/app/components/HeaderCell/HeaderCell";
 import ConnectionsCell from "@/app/components/ConnectionsCell/ConnectionsCell";
 import TableCell from "@/app/components/TableCell/TableCell";
 import Dialog from "@/app/components/Dialog/Dialog";
+import EditorComp from "../components/EditorComp/EditorComp";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/index";
@@ -96,7 +97,7 @@ function DBMS() {
                   flexGrow: "0",
                 }} // Subtracting half of drag-divider's height
               >
-                Bottom Content Cell
+                <EditorComp />
               </div>
             </>
           )}
